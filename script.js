@@ -15,7 +15,6 @@ addBtn.addEventListener("click", () => {
     taskInput.value = "";
   }
 });
-
 function addTask(text, completed = false) {
   const li = document.createElement("li");
   li.textContent = text;
