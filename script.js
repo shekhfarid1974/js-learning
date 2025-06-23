@@ -5,7 +5,7 @@ const taskList = document.getElementById("task-list");
 // Load tasks from localStorage
 window.onload = () => {
   const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-  tasks.forEach(task => addTask(task.text, task.completed));
+  tasks.forEach((task) => addTask(task.text, task.completed));
 };
 
 addBtn.addEventListener("click", () => {
@@ -38,13 +38,12 @@ function addTask(text, completed = false) {
   taskList.appendChild(li);
   saveTasks();
 }
-
 function saveTasks() {
   const tasks = [];
-  document.querySelectorAll("#task-list li").forEach(li => {
+  document.querySelectorAll("#task-list li").forEach((li) => {
     tasks.push({
       text: li.firstChild.textContent.trim(),
-      completed: li.classList.contains("completed")
+      completed: li.classList.contains("completed"),
     });
   });
   localStorage.setItem("tasks", JSON.stringify(tasks));
