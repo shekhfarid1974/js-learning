@@ -24,7 +24,6 @@ function addTask(text, completed = false) {
     li.classList.toggle("completed");
     saveTasks();
   });
-
   const deleteBtn = document.createElement("button");
   deleteBtn.textContent = "Delete";
   deleteBtn.className = "delete-btn";
