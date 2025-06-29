@@ -1,49 +1,49 @@
-const taskInput = document.getElementById("task-input");
-const addBtn = document.getElementById("add-btn");
-const taskList = document.getElementById("task-list");
+document.getElementById('contactForm').addEventListener('submit', function (e) {
+  e.preventDefault(); // Prevent default form submission
 
-// Load tasks from localStorage
-window.onload = () => {
-  const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-  tasks.forEach((task) => addTask(task.text, task.completed));
-};
+  let isValid = true;
 
-addBtn.addEventListener("click", () => {
-  const text = taskInput.value.trim();
-  if (text !== "") {
-    addTask(text);
-    taskInput.value = "";
+  // Clear previous errors
+  document.querySelectorAll('.error').forEach(error => error.textContent = '');
+  document.querySelectorAll('.error').forEach(error => error.style.display = 'none');
+
+  // Get values
+  const name = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const message = document.getElementById('message').value.trim();
+
+  // Validate Name
+  if (name === '') {
+    showError('name', 'Name is required');
+    isValid = false;
+  }
+
+  // Validate Email
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (email === '') {
+    showError('email', 'Email is required');
+    isValid = false;
+  } else if (!emailRegex.test(email)) {
+    showError('email', 'Please enter a valid email address');
+    isValid = false;
+  }
+
+  // Validate Message
+  if (message === '') {
+    showError('message', 'Message is required');
+    isValid = false;
+  }
+
+  // If valid, submit form
+  if (isValid) {
+    alert('Form submitted successfully!');
+    this.submit(); // You can change this to an AJAX call or redirect
   }
 });
-function addTask(text, completed = false) {
-  const li = document.createElement("li");
-  li.textContent = text;
-  if (completed) li.classList.add("completed");
 
-  li.addEventListener("click", () => {
-    li.classList.toggle("completed");
-    saveTasks();
-  });
-  const deleteBtn = document.createElement("button");
-  deleteBtn.textContent = "Delete";
-  deleteBtn.className = "delete-btn";
-  deleteBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    li.remove();
-    saveTasks();
-  });
-
-  li.appendChild(deleteBtn);
-  taskList.appendChild(li);
-  saveTasks();
-}
-function saveTasks() {
-  const tasks = [];
-  document.querySelectorAll("#task-list li").forEach((li) => {
-    tasks.push({
-      text: li.firstChild.textContent.trim(),
-      completed: li.classList.contains("completed"),
-    });
-  });
-  localStorage.setItem("tasks", JSON.stringify(tasks));
+function showError(fieldId, message) {
+  const field = document.getElementById(fieldId);
+  const errorDiv = field.closest('.form-group').querySelector('.error');
+  errorDiv.textContent = message;
+  errorDiv.style.display = 'block';
 }
