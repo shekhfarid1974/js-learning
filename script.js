@@ -1,49 +1,64 @@
-document.getElementById('contactForm').addEventListener('submit', function (e) {
-  e.preventDefault(); // Prevent default form submission
+function appData() {
+  return {
+    activeTab: 'calls',
+    callLogs: [],
 
-  let isValid = true;
+    // Fields
+    applicantNo: '',
+    callId: '',
+    agentNo: '',
+    didNo: '',
+    callType: 'inbound',
+    startTime: '',
+    endTime: '',
+    callDuration: '',
+    status: '',
 
-  // Clear previous errors
-  document.querySelectorAll('.error').forEach(error => error.textContent = '');
-  document.querySelectorAll('.error').forEach(error => error.style.display = 'none');
+    // Responses
+    counsellorResponse: {},
+    opportunityResponse: {},
+    callNotificationResponse: {},
+    callBackResponse: {},
 
-  // Get values
-  const name = document.getElementById('name').value.trim();
-  const email = document.getElementById('email').value.trim();
-  const message = document.getElementById('message').value.trim();
+    async testGetCounsellor() {
+      const res = await axios.post('https://services.in8.nopaperforms.com/webhooks/v1/13c3db68f26fe3a9997e6164dce63448/getCounsellor ', {
+        applicant_no: this.applicantNo
+      });
+      this.counsellorResponse = res.data;
+    },
 
-  // Validate Name
-  if (name === '') {
-    showError('name', 'Name is required');
-    isValid = false;
-  }
+    async testGetOpportunity() {
+      const res = await axios.post('https://services.in8.nopaperforms.com/webhooks/v1/13c3db68f26fe3a9997e6164dce63448/getOpportunity ', {
+        applicant_no: this.applicantNo
+      });
+      this.opportunityResponse = res.data;
+    },
 
-  // Validate Email
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (email === '') {
-    showError('email', 'Email is required');
-    isValid = false;
-  } else if (!emailRegex.test(email)) {
-    showError('email', 'Please enter a valid email address');
-    isValid = false;
-  }
+    async testIvrCallNotification() {
+      const res = await axios.post('https://services.in8.nopaperforms.com/webhooks/v1/13c3db68f26fe3a9997e6164dce63448/ivrCallNotification ', {
+        call_id: this.callId,
+        agent_no: this.agentNo,
+        applicant_no: this.applicantNo,
+        did_no: this.didNo,
+        call_type: this.callType
+      });
+      this.callNotificationResponse = res.data;
+    },
 
-  // Validate Message
-  if (message === '') {
-    showError('message', 'Message is required');
-    isValid = false;
-  }
-
-  // If valid, submit form
-  if (isValid) {
-    alert('Form submitted successfully!');
-    this.submit(); // You can change this to an AJAX call or redirect
-  }
-});
-
-function showError(fieldId, message) {
-  const field = document.getElementById(fieldId);
-  const errorDiv = field.closest('.form-group').querySelector('.error');
-  errorDiv.textContent = message;
-  errorDiv.style.display = 'block';
+    async testIvrCallBackDetails() {
+      const res = await axios.post('https://services.in8.nopaperforms.com/webhooks/v1/13c3db68f26fe3a9997e6164dce63448/ivrCallBackDetails ', {
+        call_id: this.callId,
+        agent_no: this.agentNo,
+        applicant_no: this.applicantNo,
+        did_no: this.didNo,
+        call_type: this.callType,
+        start_time: this.startTime,
+        end_time: this.endTime,
+        call_duration: this.callDuration,
+        status: this.status,
+        resource_url: 'example.com',
+      });
+      this.callBackResponse = res.data;
+    }
+  };
 }
