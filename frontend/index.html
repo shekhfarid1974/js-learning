@@ -10,6 +10,7 @@
     <div class="dashboard-container">
         <header>
             <h1>Finance Dashboard</h1>
+            <p class="last-updated" id="last-updated">Updating...</p>
         </header>
 
         <div class="kpi-container">
@@ -27,10 +28,18 @@
             </div>
         </div>
 
-        <div class="chart-container">
-            <canvas id="revenueChart"></canvas>
+        <div class="charts-grid">
+            <div class="chart-container">
+                <h3>Revenue Over Time</h3>
+                <canvas id="revenueChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3>Expense Breakdown</h3>
+                <canvas id="expenseChart"></canvas>
+            </div>
         </div>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="app.js"></script>
 </body>

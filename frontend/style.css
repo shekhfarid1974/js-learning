@@ -17,6 +17,14 @@ header h1 {
     margin-bottom: 40px;
 }
 
+.last-updated {
+    color: #95a5a6;
+    font-size: 0.9rem;
+    margin-top: -30px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
 .kpi-container {
     display: flex;
     justify-content: space-around;
@@ -67,4 +75,18 @@ header h1 {
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+}
+
+.chart-container h3 {
+    text-align: center;
+    color: #3e4c59;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-weight: 500;
 }

@@ -18,16 +18,24 @@ app.get('/api/greeting', (req, res) => {
 
 // A new API endpoint for dashboard data
 app.get('/api/dashboard-data', (req, res) => {
+  // Helper to add some random variation to a number to simulate live data
+  const fluctuate = (value) => value * (1 + (Math.random() - 0.5) * 0.05); // +/- 2.5% variation
+
   const data = {
+    lastUpdated: new Date().toISOString(),
     kpis: {
-      revenue: 542300.75,
-      profit: 123800.21,
-      expenses: 418500.54,
+      revenue: fluctuate(542300.75),
+      profit: fluctuate(123800.21),
+      expenses: fluctuate(418500.54),
     },
     revenueChart: {
       labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-      data: [65000, 59000, 80000, 81000, 56000, 95000],
-    }
+      data: [65000, 59000, 80000, 81000, 56000, 95000].map(fluctuate),
+    },
+    expenseChart: {
+      labels: ['Salaries', 'Marketing', 'Rent', 'Supplies', 'Utilities'],
+      data: [180000, 75000, 60000, 53500.54, 50000].map(fluctuate),
+    },
   };
   res.json(data);
 });

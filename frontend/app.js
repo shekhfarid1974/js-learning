@@ -1,5 +1,13 @@
+// Keep track of chart instances to prevent duplicates
+let revenueChartInstance = null;
+let expenseChartInstance = null;
+
 document.addEventListener('DOMContentLoaded', () => {
+    // Fetch data immediately on load
     fetchDashboardData();
+
+    // Then fetch data every 10 seconds
+    setInterval(fetchDashboardData, 10000);
 });
 
 function fetchDashboardData() {
@@ -13,11 +21,28 @@ function fetchDashboardData() {
         .then(data => {
             updateKPIs(data.kpis);
             renderRevenueChart(data.revenueChart);
+            renderExpenseChart(data.expenseChart);
+            updateTimestamp(data.lastUpdated);
         })
         .catch(error => {
             console.error('Error fetching dashboard data:', error);
             // You could display an error message to the user on the page
         });
+}
+
+function updateTimestamp(isoString) {
+    const lastUpdatedElement = document.getElementById('last-updated');
+    if (!lastUpdatedElement) {
+        return;
+    }
+
+    const date = new Date(isoString);
+    const formattedTime = date.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
+    lastUpdatedElement.textContent = `Last Updated: ${formattedTime}`;
 }
 
 function updateKPIs(kpis) {
@@ -29,9 +54,13 @@ function updateKPIs(kpis) {
 }
 
 function renderRevenueChart(chartData) {
+    if (revenueChartInstance) {
+        revenueChartInstance.destroy();
+    }
+
     const ctx = document.getElementById('revenueChart').getContext('2d');
 
-    new Chart(ctx, {
+    revenueChartInstance = new Chart(ctx, {
         type: 'line',
         data: {
             labels: chartData.labels,
@@ -52,6 +81,52 @@ function renderRevenueChart(chartData) {
                     beginAtZero: true,
                     ticks: {
                         callback: (value) => '$' + value / 1000 + 'k'
+                    }
+                }
+            }
+        }
+    });
+}
+
+function renderExpenseChart(chartData) {
+    if (expenseChartInstance) {
+        expenseChartInstance.destroy();
+    }
+
+    const ctx = document.getElementById('expenseChart').getContext('2d');
+
+    expenseChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: chartData.labels,
+            datasets: [{
+                label: 'Expenses by Category',
+                data: chartData.data,
+                backgroundColor: [
+                    '#e74c3c', // Alizarin
+                    '#f39c12', // Orange
+                    '#3498db', // Peter River
+                    '#9b59b6', // Amethyst
+                    '#1abc9c'  // Turquoise
+                ],
+                borderColor: '#ffffff',
+                borderWidth: 3,
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.label || '';
+                            const value = context.parsed;
+                            return `${label}: ${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value)}`;
+                        }
                     }
                 }
             }
